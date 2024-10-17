@@ -901,6 +901,12 @@ public class FlowController implements ReportingTaskProvider, FlowAnalysisRulePr
             maxProcessesPerType = maxProcesses;
         }
 
+        final String pythonTmpdirString = nifiProperties.getProperty(NiFiProperties.PYTHON_TMPDIR);
+        File pythonTmpdir = null;
+        if (pythonTmpdirString != null) {
+            pythonTmpdir = new File(pythonTmpdirString);
+        }
+
         final PythonProcessConfig pythonProcessConfig = new PythonProcessConfig.Builder()
             .pythonCommand(pythonCommand)
             .pythonFrameworkDirectory(pythonFrameworkSourceDirectory)
@@ -912,6 +918,7 @@ public class FlowController implements ReportingTaskProvider, FlowAnalysisRulePr
             .enableControllerDebug(enableControllerDebug)
             .debugPort(debugPort)
             .debugHost(debugHost)
+            .pythonTempDirectory(pythonTmpdir)
             .build();
 
         final ControllerServiceTypeLookup serviceTypeLookup = serviceProvider::getControllerServiceType;

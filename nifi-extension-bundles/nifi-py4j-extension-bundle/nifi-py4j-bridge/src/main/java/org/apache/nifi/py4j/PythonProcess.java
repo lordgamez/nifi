@@ -235,6 +235,7 @@ public class PythonProcess {
         final File pythonFrameworkDirectory = processConfig.getPythonFrameworkDirectory();
         final File pythonApiDirectory = new File(pythonFrameworkDirectory.getParentFile(), "api");
         final String pythonCommand = resolvePythonCommand();
+        final File pythonTempDir = processConfig.getPythonTempDirectory();
 
         final File controllerPyFile = new File(pythonFrameworkDirectory, PYTHON_CONTROLLER_FILENAME);
         final ProcessBuilder processBuilder = new ProcessBuilder();
@@ -274,6 +275,7 @@ public class PythonProcess {
         processBuilder.environment().put("ENV_HOME", virtualEnvHome.getAbsolutePath());
         processBuilder.environment().put("PYTHONPATH", pythonPath);
         processBuilder.environment().put("PYTHON_CMD", pythonCommand);
+        processBuilder.environment().put("PYTHON_TMPDIR", pythonTempDir == null ? "" : pythonTempDir.getAbsolutePath());
         processBuilder.environment().put("AUTH_TOKEN", authToken);
 
         // Redirect error stream to standard output stream

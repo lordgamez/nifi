@@ -271,6 +271,16 @@ class ExtensionManager:
 
         return details_by_class
 
+    def __get_python_env(self):
+        python_tmpdir = os.getenv("PYTHON_TMPDIR")
+        python_env = None
+        if python_tmpdir:
+            python_env = os.environ.copy()
+            python_env["TMPDIR"] = python_tmpdir
+            if not os.path.exists(python_tmpdir):
+                logger.info(f"Configured Python temp directory {python_tmpdir} doest not exist, creating it")
+                os.makedirs(python_tmpdir)
+        return python_env
 
     def import_external_dependencies(self, processor_details, work_dir):
         class_name = processor_details.getProcessorType()
@@ -302,7 +312,7 @@ class ExtensionManager:
             python_cmd = os.getenv("PYTHON_CMD")
             args = [python_cmd, '-m', 'pip', 'install', '--no-cache-dir', '--target', target_dir] + dependency_references
             logger.info(f"Installing dependencies {dependency_references} for {class_name} to {target_dir} using command {args}")
-            result = subprocess.run(args)
+            result = subprocess.run(args, env=self.__get_python_env())
 
             if result.returncode == 0:
                 logger.info(f"Successfully installed requirements for {class_name} to {target_dir}")
