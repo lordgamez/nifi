@@ -901,6 +901,21 @@ public class FlowController implements ReportingTaskProvider, FlowAnalysisRulePr
             maxProcessesPerType = maxProcesses;
         }
 
+        final String pythonTmpdirString = nifiProperties.getProperty(NiFiProperties.PYTHON_TMPDIR);
+        File pythonTmpdir = null;
+        if (pythonTmpdirString != null) {
+            pythonTmpdir = new File(pythonTmpdirString);
+        }
+
+        final String pythonIndexUrl = nifiProperties.getProperty(NiFiProperties.PYTHON_INDEX_URL);
+        final String pythonExtraIndexUrls = nifiProperties.getProperty(NiFiProperties.PYTHON_EXTRA_INDEX_URLS);
+        final boolean pythonUseCacheDir = Boolean.parseBoolean(nifiProperties.getProperty(NiFiProperties.PYTHON_USE_CACHE_DIR));
+        final String pythonCacheDirString = nifiProperties.getProperty(NiFiProperties.PYTHON_CACHE_DIR_PATH);
+        File pythonCacheDirPath = null;
+        if (pythonCacheDirString != null) {
+            pythonCacheDirPath = new File(pythonCacheDirString);
+        }
+
         final PythonProcessConfig pythonProcessConfig = new PythonProcessConfig.Builder()
             .pythonCommand(pythonCommand)
             .pythonFrameworkDirectory(pythonFrameworkSourceDirectory)
@@ -912,6 +927,11 @@ public class FlowController implements ReportingTaskProvider, FlowAnalysisRulePr
             .enableControllerDebug(enableControllerDebug)
             .debugPort(debugPort)
             .debugHost(debugHost)
+            .pythonTempDirectory(pythonTmpdir)
+            .pythonIndexUrl(pythonIndexUrl)
+            .pythonExtraIndexUrls(pythonExtraIndexUrls)
+            .pythonUseCacheDir(pythonUseCacheDir)
+            .pythonCacheDirPath(pythonCacheDirPath)
             .build();
 
         final ControllerServiceTypeLookup serviceTypeLookup = serviceProvider::getControllerServiceType;

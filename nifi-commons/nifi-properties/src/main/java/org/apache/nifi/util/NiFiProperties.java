@@ -309,6 +309,11 @@ public class NiFiProperties extends ApplicationProperties {
     public static final String PYTHON_MAX_PROCESSES = "nifi.python.max.processes";
     public static final String PYTHON_MAX_PROCESSES_PER_TYPE = "nifi.python.max.processes.per.extension.type";
     public static final String PYTHON_COMMS_TIMEOUT = "nifi.python.comms.timeout";
+    public static final String PYTHON_TMPDIR = "nifi.python.temp.directory";
+    public static final String PYTHON_INDEX_URL = "nifi.python.index.url";
+    public static final String PYTHON_EXTRA_INDEX_URLS = "nifi.python.extra.index.urls";
+    public static final String PYTHON_USE_CACHE_DIR = "nifi.python.use.cache.dir";
+    public static final String PYTHON_CACHE_DIR_PATH = "nifi.python.cache.dir.path";
 
     public static final String PYTHON_CONTROLLER_DEBUGPY_ENABLED = "nifi.python.controller.debugpy.enabled";
     public static final String PYTHON_CONTROLLER_DEBUGPY_PORT = "nifi.python.controller.debugpy.port";

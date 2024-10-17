@@ -35,6 +35,11 @@ public class PythonProcessConfig {
     private final boolean debugController;
     private final String debugHost;
     private final int debugPort;
+    private final File pythonTempDirectory;
+    private final String pythonIndexUrl;
+    private final String pythonExtraIndexUrls;
+    private final boolean pythonUseCacheDir;
+    private final File pythonCacheDirPath;
 
     private PythonProcessConfig(final Builder builder) {
         this.pythonCommand = builder.pythonCommand;
@@ -47,6 +52,11 @@ public class PythonProcessConfig {
         this.debugController = builder.debugController;
         this.debugPort = builder.debugPort;
         this.debugHost = builder.debugHost;
+        this.pythonTempDirectory = builder.pythonTempDirectory;
+        this.pythonIndexUrl = builder.pythonIndexUrl;
+        this.pythonExtraIndexUrls = builder.pythonExtraIndexUrls;
+        this.pythonUseCacheDir = builder.pythonUseCacheDir;
+        this.pythonCacheDirPath = builder.pythonCacheDirPath;
     }
 
     public String getPythonCommand() {
@@ -89,6 +99,26 @@ public class PythonProcessConfig {
         return debugPort;
     }
 
+    public File getPythonTempDirectory() {
+        return pythonTempDirectory;
+    }
+
+    public String getPythonIndexUrl() {
+        return pythonIndexUrl;
+    }
+
+    public String getPythonExtraIndexUrls() {
+        return pythonExtraIndexUrls;
+    }
+
+    public boolean getPythonUseCacheDir() {
+        return pythonUseCacheDir;
+    }
+
+    public File getPythonCacheDirPath() {
+        return pythonCacheDirPath;
+    }
+
     public static class Builder {
         private String pythonCommand = "python3";
         private File pythonFrameworkDirectory = new File("python/framework");
@@ -100,6 +130,11 @@ public class PythonProcessConfig {
         private boolean debugController = false;
         private String debugHost = "localhost";
         private int debugPort = 5678;
+        private File pythonTempDirectory = null;
+        private String pythonIndexUrl = "";
+        private String pythonExtraIndexUrls = "";
+        private boolean pythonUseCacheDir = false;
+        private File pythonCacheDirPath = null;
 
 
         public Builder pythonCommand(final String command) {
@@ -161,6 +196,31 @@ public class PythonProcessConfig {
 
         public Builder debugHost(final String debugHost) {
             this.debugHost = debugHost;
+            return this;
+        }
+
+        public Builder pythonTempDirectory(final File pythonTempDirectory) {
+            this.pythonTempDirectory = pythonTempDirectory;
+            return this;
+        }
+
+        public Builder pythonIndexUrl(final String pythonIndexUrl) {
+            this.pythonIndexUrl = pythonIndexUrl;
+            return this;
+        }
+
+        public Builder pythonExtraIndexUrls(final String pythonExtraIndexUrls) {
+            this.pythonExtraIndexUrls = pythonExtraIndexUrls;
+            return this;
+        }
+
+        public Builder pythonUseCacheDir(final boolean pythonUseCacheDir) {
+            this.pythonUseCacheDir = pythonUseCacheDir;
+            return this;
+        }
+
+        public Builder pythonCacheDirPath(final File pythonCacheDirPath) {
+            this.pythonCacheDirPath = pythonCacheDirPath;
             return this;
         }
 

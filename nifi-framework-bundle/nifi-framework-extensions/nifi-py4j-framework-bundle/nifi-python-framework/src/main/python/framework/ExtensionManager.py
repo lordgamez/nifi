@@ -22,6 +22,7 @@ import pkgutil
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 import ProcessorInspection
 
@@ -271,6 +272,16 @@ class ExtensionManager:
 
         return details_by_class
 
+    def __get_python_env(self):
+        python_tmpdir = os.getenv("PYTHON_TMPDIR")
+        python_env = None
+        if python_tmpdir:
+            python_env = os.environ.copy()
+            python_env["TMPDIR"] = python_tmpdir
+            if not os.path.exists(python_tmpdir):
+                logger.info(f"Configured Python temp directory {python_tmpdir} doest not exist, creating it")
+                os.makedirs(python_tmpdir)
+        return python_env
 
     def import_external_dependencies(self, processor_details, work_dir):
         class_name = processor_details.getProcessorType()
@@ -300,9 +311,34 @@ class ExtensionManager:
 
         if len(dependency_references) > 0:
             python_cmd = os.getenv("PYTHON_CMD")
-            args = [python_cmd, '-m', 'pip', 'install', '--no-cache-dir', '--target', target_dir] + dependency_references
+            dependency_installation_args = [python_cmd, '-m', 'pip', 'install', '--target', target_dir]
+
+            python_index_url = os.getenv("PYTHON_INDEX_URL").strip()
+            if python_index_url:
+                dependency_installation_args += ['--index-url', python_index_url]
+                host = urlparse(python_index_url).netloc
+                if host:
+                    dependency_installation_args += ['--trusted-host', host]
+
+            python_extra_index_urls = os.getenv("PYTHON_EXTRA_INDEX_URLS")
+            if python_extra_index_urls:
+                for python_extra_index_url in python_extra_index_urls.split(","):
+                    dependency_installation_args += ['--extra-index-url', python_extra_index_url.strip()]
+                    host = urlparse(python_extra_index_url.strip()).netloc
+                    if host:
+                        dependency_installation_args += ['--trusted-host', host]
+
+            python_use_cache_dir = os.getenv("PYTHON_USE_CACHE_DIR").strip().lower() == 'true'
+            if python_use_cache_dir:
+                python_cache_dir_path = os.getenv("PYTHON_CACHE_DIR_PATH").strip()
+                if python_cache_dir_path:
+                    dependency_installation_args += ['--cache-dir', python_cache_dir_path]
+            else:
+                dependency_installation_args.append('--no-cache-dir')
+
+            args = dependency_installation_args + dependency_references
             logger.info(f"Installing dependencies {dependency_references} for {class_name} to {target_dir} using command {args}")
-            result = subprocess.run(args)
+            result = subprocess.run(args, env=self.__get_python_env())
 
             if result.returncode == 0:
                 logger.info(f"Successfully installed requirements for {class_name} to {target_dir}")

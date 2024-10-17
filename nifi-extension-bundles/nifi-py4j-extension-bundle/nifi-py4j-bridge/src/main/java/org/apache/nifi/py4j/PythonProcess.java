@@ -235,6 +235,11 @@ public class PythonProcess {
         final File pythonFrameworkDirectory = processConfig.getPythonFrameworkDirectory();
         final File pythonApiDirectory = new File(pythonFrameworkDirectory.getParentFile(), "api");
         final String pythonCommand = resolvePythonCommand();
+        final File pythonTempDir = processConfig.getPythonTempDirectory();
+        final String pythonIndexUrl = processConfig.getPythonIndexUrl();
+        final String pythonExtraIndexUrls = processConfig.getPythonExtraIndexUrls();
+        final boolean pythonUseCacheDir = processConfig.getPythonUseCacheDir();
+        final File pythonCacheDirPath = processConfig.getPythonCacheDirPath();
 
         final File controllerPyFile = new File(pythonFrameworkDirectory, PYTHON_CONTROLLER_FILENAME);
         final ProcessBuilder processBuilder = new ProcessBuilder();
@@ -274,6 +279,11 @@ public class PythonProcess {
         processBuilder.environment().put("ENV_HOME", virtualEnvHome.getAbsolutePath());
         processBuilder.environment().put("PYTHONPATH", pythonPath);
         processBuilder.environment().put("PYTHON_CMD", pythonCommand);
+        processBuilder.environment().put("PYTHON_TMPDIR", pythonTempDir == null ? "" : pythonTempDir.getAbsolutePath());
+        processBuilder.environment().put("PYTHON_INDEX_URL", pythonIndexUrl == null ? "" : pythonIndexUrl);
+        processBuilder.environment().put("PYTHON_EXTRA_INDEX_URLS", pythonExtraIndexUrls == null ? "" : pythonExtraIndexUrls);
+        processBuilder.environment().put("PYTHON_USE_CACHE_DIR", Boolean.toString(pythonUseCacheDir));
+        processBuilder.environment().put("PYTHON_CACHE_DIR_PATH", pythonCacheDirPath == null ? "" : pythonCacheDirPath.getAbsolutePath());
         processBuilder.environment().put("AUTH_TOKEN", authToken);
 
         // Redirect error stream to standard output stream
